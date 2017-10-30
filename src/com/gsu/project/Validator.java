@@ -38,8 +38,7 @@ public class Validator {
         
         showMeasurementResults();
     }
-    
-    
+        
     private static void showGroupInfo() {
         System.out.println ("***************************************************************************");
         System.out.println ("CSCI 1302: Principles of Computer Science I - Fall 2017");
@@ -73,8 +72,10 @@ public class Validator {
         System.out.println("\t[2] Bubble");
         System.out.println("\t[3] Bucket");
         
+        System.out.println();
+        
         do {
-            System.out.print ("Your selection [option1, option2]....: ");
+            System.out.print ("Your selection []....: ");
             
             selection = input.next();
             sMap = selection.split(",");
