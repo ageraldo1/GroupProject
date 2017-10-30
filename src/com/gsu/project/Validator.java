@@ -16,15 +16,19 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Scanner;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Date;
 import java.lang.reflect.Method;
+import java.util.Collection;
 
 
 public class Validator {
     
-    private static HashMap sortPerfCounter = new HashMap();
+    private static HashMap sortPerfCounter = new LinkedHashMap();
+    private static HashMap searchPerfCounter = new LinkedHashMap();
     
     public static void main (String args[]) {
+        
         showGroupInfo();
 
         int[] sortSelection = showSortMenu();
@@ -41,7 +45,7 @@ public class Validator {
         System.out.println ("CSCI 1302: Principles of Computer Science I - Fall 2017");
         System.out.println ("Group Project\n");
         System.out.println ("\t\tAlexandre Geraldo");
-        System.out.println ("\t\tSidney William");
+        System.out.println ("\t\tSidney Williams");
         System.out.println ("\n");
         System.out.println ("***************************************************************************");
         
@@ -53,18 +57,21 @@ public class Validator {
     }
     
     private static int[] showSortMenu() {
+        final int MIN_SELECTION = 3;
+        
         String selection;
         String[] sMap;
-        int[] result = new int [2];
+        int[] result = new int [MIN_SELECTION];
         
         boolean valid = false;
         Scanner input = new Scanner(System.in);
 
         System.out.println("+--------------------------------------+");
-        System.out.println("Choose TWO Sorting Algorithms below");        
+        System.out.println("Choose THREE  Sorting Algorithms below");        
         System.out.println("+--------------------------------------+");
-        System.out.println("[1]....Bogo");
-        System.out.println("[2]....Bubble");
+        System.out.println("\t[1] Bogo");
+        System.out.println("\t[2] Bubble");
+        System.out.println("\t[3] Bucket");
         
         do {
             System.out.print ("Your selection [option1, option2]....: ");
@@ -72,10 +79,11 @@ public class Validator {
             selection = input.next();
             sMap = selection.split(",");
             
-            if ( sMap.length == 2) {
+            if ( sMap.length == MIN_SELECTION) {
                 try {
                     result[0] = Integer.parseInt(sMap[0]);
                     result[1] = Integer.parseInt(sMap[1]);
+                    result[2] = Integer.parseInt(sMap[2]);
                     
                     valid = true;
                 } catch (NumberFormatException e ) {
@@ -95,6 +103,8 @@ public class Validator {
         String selection;
         int result = 100000;
         
+        final int MIN_RANDOM_INT=10;
+        
         boolean valid = false;
         Scanner input = new Scanner(System.in);
 
@@ -113,7 +123,7 @@ public class Validator {
                 try {
                     result = Integer.parseInt(selection);
                     
-                    if ( result >= 100000) {
+                    if ( result >= MIN_RANDOM_INT) {
                         valid = true;
                     } else { 
                         System.out.println ("Number of random integers must be greater or equals to 100000");    
@@ -132,6 +142,8 @@ public class Validator {
 
         int[] a;
         String className="";
+        final String methodName = "run";
+        
         
         System.out.println ("Running Sorting algorithms testing....");
         
@@ -141,19 +153,38 @@ public class Validator {
                 
             } else if ( sortSelection[i] == 2) {
                 className = "com.gsu.project.BubbleSort";
+                
+            } else if ( sortSelection[i] == 3) {
+                className = "com.gsu.project.BucketSort";
             }
             
             a = ArrayUtil.randomIntArray(numberRandom, numberRandom);
             System.out.println ("Running " + className + "....");
             
-            if ( runMethod("com.gsu.project.BogoSort", "run", a) == false ) {
+            if ( runMethod(className, methodName, a) == false ) {
                 System.out.println ("Error running performance testing for class " + className);
             }
         }
     }
     
     private static void showMeasurementResults() {
-        System.out.println (sortPerfCounter);
+        
+        System.out.println ("+--------------------------------------------------------+");
+        System.out.println ("Performance results");
+        System.out.println ("+--------------------------------------------------------+");
+        System.out.println ("\tSort algorithm(s)");
+        
+        Collection<?> keys = sortPerfCounter.keySet();
+        
+        for ( Object key: keys) {
+            System.out.println ("\t\tAlgorithm........:" + key);
+            System.out.println ("\t\tTime taken(ms)...:" + sortPerfCounter.get(key));
+            System.out.println ();
+        }
+        
+        System.out.println ("\tFastest sort Algorithm...:" + getPerformanceRecord(sortPerfCounter, "b"));
+        System.out.println ("\tSlowest sort Algorithm...:" + getPerformanceRecord(sortPerfCounter, "w"));
+        
     }
     
     private static boolean runMethod(String className, String methodName, int[] a) {
@@ -175,6 +206,7 @@ public class Validator {
             sortPerfCounter.put (className, end.getTime() - start.getTime());
             
         } catch (ClassNotFoundException | IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | SecurityException | InvocationTargetException e) {
+            e.printStackTrace();
             flag = false;
             
         }
@@ -182,5 +214,39 @@ public class Validator {
         return flag;                
     }
     
+
+    private static HashMap getPerformanceRecord (HashMap m, String order) {
+        HashMap result = new HashMap();
+        
+        String mapKey="";
+        long mapValue=0;
+
+        Collection<?> keys = m.keySet();
+        
+        for ( Object key: keys) {            
+            if ( mapKey.length() == 0 ) {
+                mapKey = (String)key;
+                mapValue = (long)m.get(key);
+                
+            } else {
+                if ( order.equals("w")) {
+                    if ( (long)m.get(key) > mapValue ) {
+                        mapKey = (String)key;
+                        mapValue = (long)m.get(key);                    
+                    }                    
+                } else if ( order.equals("b")) {
+                    if ( (long)m.get(key) < mapValue ) {
+                        mapKey = (String)key;
+                        mapValue = (long)m.get(key);                    
+                    }                    
+                }
+            }                
+        }        
+        
+        result.put (mapKey, mapValue);
+        
+        return result;
+        
+    }
     
 }
