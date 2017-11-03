@@ -35,14 +35,17 @@ Additional Parameters
 +--------------------------------------------------------------+
 a) Enter the number of elements of the random array of integers
 	Your selection [minimum of 100000 element(s)]....: 300000
+	
 b) Enter the number value to be seached into the array or type r for a random number
 	Your selection []....: r
 	Searching for the number value...: 96887
+	
 +--------------------------------------------------------------+
 Running Sorting algorithms testing....
 Running com.gsu.project.sort.BubbleSort....
 Running com.gsu.project.sort.BucketSort....
 Running com.gsu.project.sort.InsertionSort....
+
 Running Searching algorithms testing....
 Running com.gsu.project.search.LinearSearch....
 	Element was found on the array
@@ -73,4 +76,5 @@ Performance results
 
 	Fastest search Algorithm...:{com.gsu.project.search.JumpSearch=1}
 	Slowest search Algorithm...:{com.gsu.project.search.LinearSearch=2}
+
 BUILD SUCCESSFUL (total time: 3 minutes 2 seconds)
