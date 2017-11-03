@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.gsu.project;
+package com.gsu.project.sort;
 
 /**
  *
@@ -11,32 +11,41 @@ package com.gsu.project;
  */
 
 
-import java.util.Random;
-
 public class BogoSort{
     
-    private static final Random generator = new Random();  
+    private void bogoSort(int[] a) {
+        while (!isSorted(a)) {
+            shuffle(a);
+        } 
+    }
     
-    public static void bogoSort(int[] array)  {
-        while (!isSorted(array)) {
-            for (int i = 0; i < array.length; i++) {                
-                int randomPosition = generator.nextInt(array.length);  
-                int temp = array[i];  
-                array[i] = array[randomPosition];  
-                array[randomPosition] = temp;  
-            }  
-        }  
-    }    
-    
-    private static boolean isSorted(int[] array)  {
-        for (int i = 1; i < array.length; i++) {
-            if (array[i] < array[i - 1]) {
-                return false;  
-            }
+    private boolean isSorted(int[] a) {
+        for (int i = 0; i < a.length - 1; i++) {
+            if (a[i] > a[i + 1]) {
+                return false;
+            }        
         }
         
-        return true;  
-    }  
+        return true;
+    }
+    
+    private void shuffle(int[] a) {
+        for (int i = 0; i < a.length - 1; i++) {
+            // pick a random index in [i+1, a.length-1]
+            int range = a.length - 1 - (i + 1) + 1;
+            int j = (int) (Math.random() * range + (i + 1));
+            swap(a, i, j);
+        }
+    }
+    
+    private void swap(int[] a, int i, int j) {
+        if (i != j) {
+            int temp = a[i];
+            a[i] = a[j];
+            a[j] = temp;
+        }
+    }
+
     
     public void run(int[] a) {
         bogoSort(a);
